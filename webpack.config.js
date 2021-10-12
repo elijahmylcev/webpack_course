@@ -14,6 +14,18 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     assetModuleFilename: '[hash][ext][query]'
   },
+  resolve: {
+    extensions: ['.js', '.json', '.png'],
+    alias: {
+      '@': path.resolve(__dirname, 'src') // создание абсол.тных путей
+    }
+  },
+  // Помогает оптимизировать код, например при повторяющихся библиотеках(Jquery)
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html'
@@ -31,6 +43,19 @@ module.exports = {
         // use: ['file-loader'] с появлением 5 версии file-file loader входит в asset
         type: 'asset/resource'
       },
+      {
+        test: /\.xml$/,
+        loader: 'xml-loader'
+      },
+      {
+        test: /\.csv$/,
+        loader: 'csv-loader',
+        options: {
+          dynamicTyping: true,
+          header: true,
+          skipEmptyLines: true
+        }
+      }
     ]
   }
 }
