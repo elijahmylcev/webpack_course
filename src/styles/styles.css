@@ -1,3 +1,11 @@
+@import '~normalize.css'; 
+/* ~ указывает, что нужно перейти в папку node_modules */
+@import 'roboto.css'; 
+/* Webpack собирает модули CSS c использованием asset modules*/
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
 .container {
     padding-top: 2rem;
     min-width: 1000px;

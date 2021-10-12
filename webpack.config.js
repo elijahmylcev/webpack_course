@@ -28,7 +28,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|svg|gif)$/,
-        // use: ['file-loader']
+        // use: ['file-loader'] с появлением 5 версии file-file loader входит в asset
         type: 'asset/resource'
       },
     ]
