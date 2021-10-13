@@ -31,6 +31,8 @@ const optimization = () => {
   return config
 }
 
+const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
+
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
@@ -39,7 +41,7 @@ module.exports = {
     analytics: './analytics.js'
   },
   output: {
-    filename: '[name].[contenthash].js',
+    filename: filename('js'),
     path: path.resolve(__dirname, 'dist'),
     assetModuleFilename: '[hash][ext][query]'
   },
@@ -53,7 +55,7 @@ module.exports = {
   optimization: optimization(),
   devServer: {
     port: 4200,
-    hot: isDev
+    // hot: isDev
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -70,7 +72,7 @@ module.exports = {
       }]
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css'
+      filename: filename('css')
     })
   ],
   module: {
@@ -95,7 +97,30 @@ module.exports = {
           header: true,
           skipEmptyLines: true
         }
+      },
+      {
+        test: /\.(s[ac]ss)$/,
+        use: [          
+          // Creates `style` nodes from JS strings
+          'style-loader',
+          // Translates CSS into CommonJS
+          'css-loader',
+          // Compiles Sass to CSS
+          'sass-loader'
+        ] // <---справа налево
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
       }
     ]
   }
 }
+
+// Приступил к TypeScript
