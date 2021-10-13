@@ -5,6 +5,31 @@ const {
 } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCssAssetPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
+const isDev = process.env.NODE_ENV === 'development'
+const isProd = !isDev
+// Если системная переменнай находится в положении сборки, то isDev === true
+console.log('IsDev value: ', isDev);
+
+const optimization = () => {
+  const config = {
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
+
+  if (isProd) {
+    config.minimizer = [
+      new OptimizeCssAssetsPlugin,
+      new TerserWebpackPlugin
+    ]
+  }
+
+  return config
+}
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
@@ -25,17 +50,17 @@ module.exports = {
     }
   },
   // Помогает оптимизировать код, например при повторяющихся библиотеках(Jquery)
-  optimization: {
-    splitChunks: {
-      chunks: 'all'
-    }
-  },
+  optimization: optimization(),
   devServer: {
-    port: 4200
+    port: 4200,
+    hot: isDev
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html'
+      template: './index.html',
+      minify: {
+        collapseWhitespace: isProd // Если запускается скрипт build --> html минифицируется
+      }
     }),
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
