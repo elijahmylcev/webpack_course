@@ -44,6 +44,16 @@ const babelOptions = preset => {
   return options
 }
 
+const jsLoaders = () => {
+  const loaders = ['babel-loader']
+
+  if (isDev) {
+    loaders.push('eslint-loader')
+  }
+
+  return loaders
+}
+
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
@@ -68,6 +78,8 @@ module.exports = {
     port: 4200,
     // hot: isDev
   },
+  devtool: isDev ? 'source-map': '',
+  // Если нужны исходные карты, то полю devtool передается строка 'source-map'
   plugins: [
     new HtmlWebpackPlugin({
       template: './index.html',
@@ -124,7 +136,7 @@ module.exports = {
         test: /\.m?js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: jsLoaders(),
           options: babelOptions()
         }
       },
