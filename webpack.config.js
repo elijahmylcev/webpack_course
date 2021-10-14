@@ -33,12 +33,23 @@ const optimization = () => {
 
 const filename = ext => isDev ? `[name].${ext}` : `[name].[hash].${ext}`
 
+const babelOptions = preset => {
+  const options = {
+    presets: ['@babel/preset-env']
+  }
+
+  if (preset) {
+    options.presets.push(preset)
+  }
+  return options
+}
+
 module.exports = {
   context: path.resolve(__dirname, 'src'),
   mode: 'development',
   entry: {
     main: './index.js',
-    analytics: './analytics.js'
+    analytics: './analytics.ts'
   },
   output: {
     filename: filename('js'),
@@ -100,7 +111,7 @@ module.exports = {
       },
       {
         test: /\.(s[ac]ss)$/,
-        use: [          
+        use: [
           // Creates `style` nodes from JS strings
           'style-loader',
           // Translates CSS into CommonJS
@@ -114,13 +125,25 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
+          options: babelOptions()
+        }
+      },
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: babelOptions('@babel/preset-typescript')
+        }
+      },
+      {
+        test: /\.jsx$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: babelOptions('@babel/preset-react')
         }
       }
     ]
   }
 }
-
-// Приступил к TypeScript
